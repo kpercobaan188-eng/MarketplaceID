@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inbox - MarketplaceID</title>
+
+  <link rel="stylesheet" href="/public/css/style.css">
+
+  <style>
+    body {
+      background: #0b0f19;
+    }
+
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background: #111827;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ef4444;
+      font-weight: bold;
+      border-bottom: 1px solid #1f2937;
+      z-index: 1000;
+    }
+
+    .container {
+      padding: 70px 15px 80px 15px;
+    }
+
+    .chat-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .chat-item {
+      background: #111827;
+      padding: 12px;
+      border-radius: 15px;
+      border: 1px solid #1f2937;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+    }
+
+    .chat-item img {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .chat-info {
+      flex: 1;
+    }
+
+    .name {
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .msg {
+      font-size: 12px;
+      color: #9ca3af;
+      margin-top: 2px;
+    }
+
+    .time {
+      font-size: 10px;
+      color: #6b7280;
+    }
+
+    .badge {
+      background: #ef4444;
+      color: white;
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="header">Chat / Inbox</div>
+
+<div class="container">
+
+  <div id="chats" class="chat-list"></div>
+
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <a href="/home">Beranda</a>
+  <a href="/favorites">Favorit</a>
+  <a href="/add-product">+</a>
+  <a class="active" href="/inbox">Chat</a>
+  <a href="/profile">Akun</a>
+</div>
+
+<script>
+async function loadChats() {
+  const res = await fetch("/api/chats");
+  const data = await res.json();
+
+  const container = document.getElementById("chats");
+
+  if (!data.chats) return;
+
+  data.chats.forEach(c => {
+    const div = document.createElement("div");
+    div.className = "chat-item";
+
+    div.innerHTML = `
+      <img src="${c.avatar || '/public/images/default-avatar.png'}">
+      <div class="chat-info">
+        <div class="name">${c.name}</div>
+        <div class="msg">${c.lastMessage || 'Mulai percakapan'}</div>
+      </div>
+      <div class="time">${c.time || ''}</div>
+      ${c.unread ? `<div class="badge">${c.unread}</div>` : ''}
+    `;
+
+    div.onclick = () => {
+      window.location.href = "/chat?id=" + c.id;
+    };
+
+    container.appendChild(div);
+  });
+}
+
+loadChats();
+</script>
+
+</body>
+</html>

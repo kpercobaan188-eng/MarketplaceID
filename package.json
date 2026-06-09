@@ -1,0 +1,30 @@
+{
+  "name": "marketplaceid",
+  "version": "3.0.0",
+  "description": "MarketplaceID - Jual Beli Barang Baru dan Bekas COD Indonesia",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "marketplace",
+    "cod",
+    "jual-beli",
+    "indonesia"
+  ],
+  "author": "MarketplaceID",
+  "license": "MIT",
+  "dependencies": {
+    "@capacitor/android": "^8.4.0",
+    "@capacitor/cli": "^8.4.0",
+    "@capacitor/core": "^8.4.0",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "express": "^4.22.2",
+    "express-session": "^1.18.1",
+    "fs-extra": "^11.3.0",
+    "multer": "^1.4.5-lts.2"
+  },
+  "type": "commonjs"
+}

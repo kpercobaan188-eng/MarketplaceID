@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MarketplaceID</title>
+
+  <link rel="stylesheet" href="/public/css/style.css">
+
+  <style>
+    body {
+      background: #0b0f19;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
+      color: white;
+    }
+
+    .logo {
+      width: 120px;
+      height: 120px;
+      border-radius: 25px;
+      background: linear-gradient(135deg, #ef4444, #111827);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 28px;
+      font-weight: bold;
+      color: white;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      animation: pop 1.2s ease;
+    }
+
+    .title {
+      margin-top: 15px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #ef4444;
+      letter-spacing: 1px;
+    }
+
+    .loading {
+      margin-top: 20px;
+      width: 120px;
+      height: 4px;
+      background: #1f2937;
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    .bar {
+      height: 100%;
+      width: 0%;
+      background: #ef4444;
+      animation: load 2.5s forwards;
+    }
+
+    @keyframes load {
+      0% { width: 0%; }
+      100% { width: 100%; }
+    }
+
+    @keyframes pop {
+      0% { transform: scale(0.5); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .text {
+      margin-top: 10px;
+      font-size: 12px;
+      color: #9ca3af;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="logo">
+    MID
+  </div>
+
+  <div class="title">
+    MarketplaceID
+  </div>
+
+  <div class="loading">
+    <div class="bar"></div>
+  </div>
+
+  <div class="text">
+    Memuat aplikasi...
+  </div>
+
+  <script>
+    setTimeout(() => {
+      window.location.href = "/login";
+    }, 2500);
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,12 @@
+{
+  "chats": [
+    {
+      "id": 1,
+      "name": "Andi",
+      "avatar": "/uploads/profiles/a1.jpg",
+      "lastMessage": "Barang masih ada?",
+      "time": "10:30",
+      "unread": 2
+    }
+  ]
+}

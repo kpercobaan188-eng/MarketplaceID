@@ -1,0 +1,14 @@
+{
+  "chats": [
+    {
+      "id": 178000003,
+      "productId": 178000002,
+      "fromUserId": 178000010,
+      "toUserId": 178000001,
+      "message": "Masih ada bang?",
+      "image": "",
+      "read": false,
+      "createdAt": 178000003
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "users": [
+    {
+      "id": 1780978748081,
+      "username": "admin",
+      "email": "rahmadaja0085@gmail.com",
+      "password": "$2a$10$Av8Qo0z66/3Bc35Ivcim1Ok5KVpMArhz9ELr.2.zib5/yTFNwTTqO",
+      "avatar": "/uploads/profiles/default-avatar.png",
+      "bio": "",
+      "city": "",
+      "verified": false,
+      "rating": 0,
+      "reviewCount": 0,
+      "reportCount": 0,
+      "followers": 0,
+      "createdAt": 1780978747655
+    }
+  ]
+}

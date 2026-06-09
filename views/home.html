@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MarketplaceID - Home</title>
+
+  <link rel="stylesheet" href="/public/css/style.css">
+
+  <style>
+    /* ===== APP LAYOUT ===== */
+    body {
+      background: #0b0f19;
+    }
+
+    .container {
+      padding-top: 70px;
+      padding-bottom: 80px;
+    }
+
+    /* ===== HEADER ===== */
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background: #111827;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 15px;
+      border-bottom: 1px solid #1f2937;
+      z-index: 1000;
+    }
+
+    .logo {
+      color: #ef4444;
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .search {
+      flex: 1;
+      margin: 0 10px;
+    }
+
+    .search input {
+      width: 100%;
+      padding: 8px;
+      border-radius: 10px;
+      border: none;
+      background: #1f2937;
+      color: white;
+      font-size: 12px;
+    }
+
+    /* ===== BANNER ===== */
+    .banner {
+      background: linear-gradient(135deg, #ef4444, #111827);
+      padding: 15px;
+      border-radius: 15px;
+      margin-bottom: 15px;
+      color: white;
+    }
+
+    .banner h2 {
+      font-size: 16px;
+    }
+
+    .banner p {
+      font-size: 12px;
+      margin-top: 5px;
+      color: #e5e7eb;
+    }
+
+    .banner button {
+      margin-top: 10px;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 10px;
+      background: white;
+      color: #111827;
+      font-weight: bold;
+      font-size: 12px;
+    }
+
+    /* ===== CATEGORY ===== */
+    .category {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .cat-item {
+      background: #111827;
+      padding: 10px;
+      border-radius: 12px;
+      text-align: center;
+      font-size: 11px;
+      border: 1px solid #1f2937;
+      color: #9ca3af;
+    }
+
+    /* ===== PRODUCT CARD ===== */
+    .product {
+      background: #111827;
+      border-radius: 15px;
+      margin-bottom: 15px;
+      overflow: hidden;
+      border: 1px solid #1f2937;
+    }
+
+    .product img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+    }
+
+    .product-body {
+      padding: 10px;
+    }
+
+    .title {
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .price {
+      color: #ef4444;
+      margin-top: 5px;
+    }
+
+    .meta {
+      font-size: 11px;
+      color: #9ca3af;
+      margin-top: 3px;
+    }
+
+    /* ===== BOTTOM NAV ===== */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background: #111827;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      border-top: 1px solid #1f2937;
+    }
+
+    .bottom-nav a {
+      color: #9ca3af;
+      font-size: 11px;
+      text-decoration: none;
+    }
+
+    .bottom-nav a.active {
+      color: #ef4444;
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="logo">MID</div>
+
+  <div class="search">
+    <input type="text" placeholder="Cari barang...">
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- BANNER -->
+  <div class="banner">
+    <h2>Temukan Barang Terbaik</h2>
+    <p>Jual beli aman, dekat, dan terpercaya</p>
+    <button>Belanja Sekarang</button>
+  </div>
+
+  <!-- CATEGORY -->
+  <div class="category">
+    <div class="cat-item">Elektronik</div>
+    <div class="cat-item">Fashion</div>
+    <div class="cat-item">Motor</div>
+    <div class="cat-item">Rumah</div>
+  </div>
+
+  <!-- PRODUCTS (DYNAMIC) -->
+  <div id="products"></div>
+
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <a class="active" href="/home">Beranda</a>
+  <a href="/favorites">Favorit</a>
+  <a href="/add-product">+</a>
+  <a href="/inbox">Chat</a>
+  <a href="/profile">Akun</a>
+</div>
+
+<script>
+async function loadHome() {
+  const res = await fetch("/api/home");
+  const data = await res.json();
+
+  const container = document.getElementById("products");
+
+  if (!data.latest) return;
+
+  data.latest.forEach(p => {
+    const div = document.createElement("div");
+    div.className = "product";
+
+    div.innerHTML = `
+      <img src="${p.image || '/public/images/banner1.jpg'}">
+      <div class="product-body">
+        <div class="title">${p.title}</div>
+        <div class="price">Rp ${p.price}</div>
+        <div class="meta">${p.location || 'Indonesia'}</div>
+      </div>
+    `;
+
+    div.onclick = () => {
+      window.location.href = "/product?id=" + p.id;
+    };
+
+    container.appendChild(div);
+  });
+}
+
+loadHome();
+</script>
+
+</body>
+</html>

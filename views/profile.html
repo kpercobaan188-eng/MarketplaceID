@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile - MarketplaceID</title>
+
+  <link rel="stylesheet" href="/public/css/style.css">
+
+  <style>
+    body {
+      background: #0b0f19;
+    }
+
+    .container {
+      padding: 70px 15px 90px 15px;
+    }
+
+    /* HEADER */
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background: #111827;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ef4444;
+      font-weight: bold;
+      border-bottom: 1px solid #1f2937;
+      z-index: 1000;
+    }
+
+    /* PROFILE CARD */
+    .profile-card {
+      background: #111827;
+      border-radius: 15px;
+      padding: 20px;
+      text-align: center;
+      border: 1px solid #1f2937;
+    }
+
+    .profile-card img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: 2px solid #ef4444;
+      object-fit: cover;
+    }
+
+    .name {
+      margin-top: 10px;
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .email {
+      font-size: 12px;
+      color: #9ca3af;
+      margin-top: 3px;
+    }
+
+    .badge {
+      display: inline-block;
+      margin-top: 8px;
+      background: #22c55e;
+      color: white;
+      padding: 3px 10px;
+      font-size: 11px;
+      border-radius: 20px;
+    }
+
+    /* STATS */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .stat {
+      background: #111827;
+      padding: 10px;
+      border-radius: 12px;
+      border: 1px solid #1f2937;
+      text-align: center;
+    }
+
+    .stat h3 {
+      color: #ef4444;
+    }
+
+    .stat p {
+      font-size: 11px;
+      color: #9ca3af;
+    }
+
+    /* MENU */
+    .menu {
+      margin-top: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .menu-item {
+      background: #111827;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid #1f2937;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .menu-item:hover {
+      background: #1f2937;
+    }
+
+  </style>
+</head>
+
+<body>
+
+<div class="header">
+  Profile
+</div>
+
+<div class="container">
+
+  <!-- PROFILE -->
+  <div class="profile-card">
+
+    <img id="avatar" src="/public/images/default-avatar.png">
+
+    <div class="name" id="username">User</div>
+
+    <div class="email" id="email">email@mail.com</div>
+
+    <div id="badge" class="badge">Unverified</div>
+
+  </div>
+
+  <!-- STATS -->
+  <div class="stats">
+
+    <div class="stat">
+      <h3 id="products">0</h3>
+      <p>Produk</p>
+    </div>
+
+    <div class="stat">
+      <h3 id="orders">0</h3>
+      <p>Transaksi</p>
+    </div>
+
+    <div class="stat">
+      <h3 id="rating">0</h3>
+      <p>Rating</p>
+    </div>
+
+  </div>
+
+  <!-- MENU -->
+  <div class="menu">
+
+    <div class="menu-item" onclick="go('/my-ads')">
+      📦 Iklan Saya
+    </div>
+
+    <div class="menu-item" onclick="go('/orders')">
+      🧾 Transaksi
+    </div>
+
+    <div class="menu-item" onclick="go('/favorites')">
+      ❤️ Favorit
+    </div>
+
+    <div class="menu-item" onclick="go('/edit-profile')">
+      ⚙️ Edit Profile
+    </div>
+
+    <div class="menu-item" onclick="logout()">
+      🚪 Logout
+    </div>
+
+  </div>
+
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <a href="/home">Beranda</a>
+  <a href="/favorites">Favorit</a>
+  <a href="/add-product">+</a>
+  <a href="/inbox">Chat</a>
+  <a class="active" href="/profile">Akun</a>
+</div>
+
+<script>
+function go(url){
+  window.location.href = url;
+}
+
+function logout(){
+  alert("Logout berhasil");
+  window.location.href = "/login";
+}
+
+/* LOAD PROFILE */
+async function loadProfile(){
+  const res = await fetch("/api/profile");
+  const data = await res.json();
+
+  if(!data.user) return;
+
+  document.getElementById("username").innerText = data.user.username;
+  document.getElementById("email").innerText = data.user.email;
+
+  document.getElementById("avatar").src =
+    data.user.avatar || "/public/images/default-avatar.png";
+
+  document.getElementById("badge").innerText =
+    data.user.verified ? "Verified ✔" : "Unverified";
+
+  document.getElementById("products").innerText =
+    data.stats.products || 0;
+
+  document.getElementById("orders").innerText =
+    data.stats.orders || 0;
+
+  document.getElementById("rating").innerText =
+    data.stats.rating || 0;
+}
+
+loadProfile();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,12 @@
+{
+  "notifications": [
+    {
+      "id": 178000006,
+      "userId": 178000001,
+      "title": "Produk Disukai",
+      "message": "Honda Vario 160 ditambahkan ke favorit.",
+      "read": false,
+      "createdAt": 178000006
+    }
+  ]
+}

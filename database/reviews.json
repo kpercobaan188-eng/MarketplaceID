@@ -1,0 +1,12 @@
+{
+  "reviews": [
+    {
+      "id": 178000007,
+      "sellerId": 178000001,
+      "buyerId": 178000010,
+      "rating": 5,
+      "comment": "Penjual ramah dan jujur.",
+      "createdAt": 178000007
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "verifications": [
+    {
+      "id": 178000004,
+      "userId": 178000001,
+      "ktpImage": "/uploads/ktp/1.jpg",
+      "selfieImage": "/uploads/ktp/2.jpg",
+      "status": "approved",
+      "createdAt": 178000004
+    }
+  ]
+}
