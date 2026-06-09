@@ -10,6 +10,7 @@
   <style>
     /* ===== APP LAYOUT ===== */
     body {
+      -webkit-tap-highlight-color: transparent;
       background: #0b0f19;
     }
 
@@ -161,7 +162,54 @@
     .bottom-nav a.active {
       color: #ef4444;
     }
-  </style>
+
+   .card-product{
+  display:flex;
+  gap:12px;
+  background:#111827;
+  padding:12px;
+  border-radius:15px;
+  margin-bottom:10px;
+  border:1px solid #1f2937;
+  transition:0.2s;
+}
+
+.card-product:active{
+  transform:scale(0.98);
+}
+
+.card-product img{
+  width:90px;
+  height:90px;
+  border-radius:12px;
+  object-fit:cover;
+  background:#1f2937;
+}
+
+.card-info{
+  flex:1;
+}
+
+.card-info .title{
+  font-size:14px;
+  font-weight:bold;
+  margin-bottom:5px;
+}
+
+.card-info .price{
+  color:#ef4444;
+  font-weight:bold;
+  margin-bottom:8px;
+}
+
+.card-info .meta{
+  display:flex;
+  justify-content:space-between;
+  font-size:11px;
+  color:#9ca3af;
+}  
+
+</style>
 </head>
 
 <body>
@@ -220,13 +268,20 @@ async function loadHome() {
     div.className = "product";
 
     div.innerHTML = `
-      <img src="${p.image || '/public/images/banner1.jpg'}">
-      <div class="product-body">
-        <div class="title">${p.title}</div>
-        <div class="price">Rp ${p.price}</div>
-        <div class="meta">${p.location || 'Indonesia'}</div>
+  <div class="card-product">
+    <img src="${p.images?.[0] || '/public/images/banner1.jpg'}">
+
+    <div class="card-info">
+      <div class="title">${p.title}</div>
+      <div class="price">Rp ${p.price}</div>
+
+      <div class="meta">
+        <span>📍 ${p.location || 'Indonesia'}</span>
+        <span>❤️ ${p.favorites || 0}</span>
       </div>
-    `;
+    </div>
+  </div>
+`;
 
     div.onclick = () => {
       window.location.href = "/product?id=" + p.id;

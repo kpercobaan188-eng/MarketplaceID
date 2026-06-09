@@ -44,7 +44,6 @@ app.use(
 
 app.use("/public", express.static(path.join(__dirname, "public")));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-
 /* =========================
    DATABASE FILES
 ========================= */
@@ -474,8 +473,6 @@ app.post(
 
       const db =
         await readJSON(PRODUCTS_DB);
-
-     console.log("PRODUCTS:", products);     // <-- DI SINI
 
       const products =
         db.products || [];

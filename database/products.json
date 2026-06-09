@@ -1,3 +1,21 @@
 {
-  "products": []
+  "products": [
+    {
+      "id": 1780989001231,
+      "sellerId": 1780978748081,
+      "title": "Tes",
+      "price": 9999,
+      "category": "Motor",
+      "condition": "Bekas",
+      "description": "Tesss",
+      "location": "",
+      "images": [
+        "/uploads/products/1780989000965-46604.jpg"
+      ],
+      "status": "active",
+      "views": 0,
+      "favorites": 0,
+      "createdAt": 1780989001013
+    }
+  ]
 }

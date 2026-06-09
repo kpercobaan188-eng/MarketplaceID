@@ -166,7 +166,7 @@ async function addProduct() {
     alert("Produk berhasil ditambahkan");
     window.location.href = "/home";
   } else {
-    alert(data.message || "Gagal menambahkan produk");
+    alert(JSON.stringify(data));
   }
 }
 
