@@ -67,9 +67,10 @@ const LOCATIONS_DB = path.join(__dirname, "database/locations.json");
 
 async function readJSON(file) {
   try {
-    return await fs.readJson(file);
+    const data = await fs.readJson(file);
+    return data || { products: [] };
   } catch (err) {
-    return {};
+    return { products: [] };
   }
 }
 
@@ -474,8 +475,12 @@ app.post(
       const db =
         await readJSON(PRODUCTS_DB);
 
+     console.log("PRODUCTS:", products);     // <-- DI SINI
+
       const products =
         db.products || [];
+
+     console.log("PRODUCTS:", products);     // <-- DI SINI
 
       const newProduct = {
         id: generateId(),
