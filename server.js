@@ -9,6 +9,12 @@ const path = require("path");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+const dir = path.join(__dirname, "uploads/products");
+
+if (!fs.existsSync(dir)) {
+  fs.mkdirSync(dir, { recursive: true });
+}
+
 /* =========================
    MIDDLEWARE
 ========================= */
