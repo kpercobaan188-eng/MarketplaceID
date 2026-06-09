@@ -112,30 +112,51 @@
 </div>
 
 <script>
+let selectedFiles = [];
+
+document.getElementById("imageInput").addEventListener("change", (e) => {
+  selectedFiles = Array.from(e.target.files);
+
+  const preview = document.getElementById("preview");
+  preview.innerHTML = "";
+
+  selectedFiles.forEach(file => {
+    const img = document.createElement("img");
+    img.src = URL.createObjectURL(file);
+    img.style.width = "80px";
+    img.style.height = "80px";
+    img.style.objectFit = "cover";
+    img.style.borderRadius = "10px";
+    preview.appendChild(img);
+  });
+});
+
 async function addProduct() {
   const title = document.getElementById("title").value;
   const price = document.getElementById("price").value;
   const category = document.getElementById("category").value;
   const description = document.getElementById("description").value;
-  const image = document.getElementById("image").value;
 
   if (!title || !price || !category) {
     alert("Isi data wajib");
     return;
   }
 
-  const res = await fetch("/api/add-product", {
+  const formData = new FormData();
+
+  formData.append("title", title);
+  formData.append("price", price);
+  formData.append("category", category);
+  formData.append("description", description);
+
+  selectedFiles.forEach(file => {
+    formData.append("images", file);
+  });
+
+  const res = await fetch("/api/products", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      title,
-      price,
-      category,
-      description,
-      image
-    })
+    credentials: "include", // 🔥 PENTING SESSION
+    body: formData
   });
 
   const data = await res.json();
@@ -144,7 +165,7 @@ async function addProduct() {
     alert("Produk berhasil ditambahkan");
     window.location.href = "/home";
   } else {
-    alert("Gagal menambahkan produk");
+    alert(data.message || "Gagal menambahkan produk");
   }
 }
 </script>
