@@ -156,8 +156,9 @@ async function addProduct() {
 
   const res = await fetch("/api/products", {
     method: "POST",
+    credentials: "include", // 👈 TAMBAH DI SINI
     body: formData
-  });
+});
 
   const data = await res.json();
 
