@@ -136,6 +136,7 @@ async function addProduct() {
   const price = document.getElementById("price").value;
   const category = document.getElementById("category").value;
   const description = document.getElementById("description").value;
+  const images = document.getElementById("imageInput").files;
 
   if (!title || !price || !category) {
     alert("Isi data wajib");
@@ -149,13 +150,12 @@ async function addProduct() {
   formData.append("category", category);
   formData.append("description", description);
 
-  selectedFiles.forEach(file => {
-    formData.append("images", file);
-  });
+  for (let i = 0; i < images.length; i++) {
+    formData.append("images", images[i]);
+  }
 
   const res = await fetch("/api/products", {
     method: "POST",
-    credentials: "include", // 🔥 PENTING SESSION
     body: formData
   });
 
@@ -168,6 +168,7 @@ async function addProduct() {
     alert(data.message || "Gagal menambahkan produk");
   }
 }
+
 </script>
 
 </body>
