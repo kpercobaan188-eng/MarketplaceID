@@ -149,33 +149,68 @@
 const params = new URLSearchParams(window.location.search);
 const id = params.get("id");
 
+let currentProduct = null;
+
 async function loadProduct() {
-  const res = await fetch(`/api/products/${id}`);
-  const data = await res.json();
 
-  if (!data.success) return;
+  try {
 
-  const p = data.product;
+    const res = await fetch(`/api/products/${id}`);
+    const data = await res.json();
 
-  const img = (p.images && p.images.length > 0)
-    ? p.images[0]
-    : "/public/images/banner1.jpg";
+    if (!data.success) {
+      alert("Produk tidak ditemukan");
+      return;
+    }
 
-  document.getElementById("img").src = img;
-  document.getElementById("title").innerText = p.title;
-  document.getElementById("price").innerText = "Rp " + Number(p.price).toLocaleString();
-  document.getElementById("meta").innerText = p.location || "Indonesia";
-  document.getElementById("desc").innerText = p.description || "Tidak ada deskripsi";
+    const p = data.product;
 
-  // seller dummy (kalau belum join API seller)
-  document.getElementById("seller").innerText = "Seller ID: " + p.sellerId;
+    currentProduct = p;
+
+    const img =
+      p.images && p.images.length
+      ? p.images[0]
+      : "/public/images/banner1.jpg";
+
+    document.getElementById("img").src =
+      img;
+
+    document.getElementById("title").innerText =
+      p.title;
+
+    document.getElementById("price").innerText =
+      "Rp " +
+      Number(p.price).toLocaleString("id-ID");
+
+    document.getElementById("meta").innerText =
+      p.location || "Indonesia";
+
+    document.getElementById("desc").innerText =
+      p.description || "Tidak ada deskripsi";
+
+    document.getElementById("seller").innerText =
+      "Seller ID: " + p.sellerId;
+
+    console.log("PRODUCT =", currentProduct);
+
+  } catch(err) {
+
+    console.log(err);
+
+  }
+
 }
 
 function chatSeller() {
-  const params = new URLSearchParams(window.location.search);
-  const productId = params.get("id");
 
-  window.location.href = `/chat?productId=${productId}`;
+  if (!currentProduct) {
+    alert("Produk belum dimuat");
+    return;
+  }
+
+  window.location.href =
+    `/chat?id=${currentProduct.sellerId}&productId=${currentProduct.id}`;
+
 }
 
 function buyNow() {

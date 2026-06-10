@@ -185,8 +185,11 @@ async function loadChats() {
 
     div.onclick = () => {
 
-      window.location.href =
-        "/chat?id=" + user.id;
+window.location.href =
+  "/chat?id=" +
+  user.id +
+  "&productId=" +
+  (item.productId || 0);
 
     };
 

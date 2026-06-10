@@ -13,9 +13,28 @@
         "/uploads/products/1780989000965-46604.jpg"
       ],
       "status": "active",
-      "views": 48,
+      "views": 83,
       "favorites": 0,
       "createdAt": 1780989001013
+    },
+    {
+      "id": 1781073340479,
+      "sellerId": 1781024821009,
+      "title": "Akun ff",
+      "price": 500000,
+      "category": "Lainnya",
+      "condition": "Bekas",
+      "description": "Sultan",
+      "location": "",
+      "images": [
+        "/uploads/products/1781073339899-1612.jpg",
+        "/uploads/products/1781073339938-18228.jpg",
+        "/uploads/products/1781073339939-74631.png"
+      ],
+      "status": "active",
+      "views": 35,
+      "favorites": 0,
+      "createdAt": 1781073340076
     }
   ]
 }

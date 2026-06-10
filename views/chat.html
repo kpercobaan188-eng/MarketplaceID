@@ -29,12 +29,12 @@ views/chat.html
       font-weight: bold;
     }
 
-    .container {
-      padding: 70px 10px 80px 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
+    .container{
+  padding:12px 10px 80px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
 
 .chat-box{
   display:flex;
@@ -112,7 +112,52 @@ views/chat.html
       font-weight: bold;
       cursor: pointer;
     }
-  </style>
+ 
+#productCard{
+  padding:70px 12px 0;
+}
+
+.product-chat-card{
+  display:flex;
+  gap:12px;
+  align-items:center;
+
+  background:#111827;
+  border:1px solid #1f2937;
+
+  border-radius:18px;
+
+  padding:12px;
+
+  box-shadow:
+  0 10px 25px rgba(0,0,0,.35);
+}
+
+.product-chat-img{
+  width:70px;
+  height:70px;
+
+  border-radius:12px;
+
+  object-fit:cover;
+}
+
+.product-chat-info{
+  flex:1;
+}
+
+.product-chat-title{
+  color:white;
+  font-size:14px;
+  font-weight:700;
+}
+
+.product-chat-price{
+  color:#ef4444;
+  margin-top:6px;
+  font-weight:700;
+}
+ </style>
 </head>
 
 <body>
@@ -120,6 +165,8 @@ views/chat.html
 <div class="header">
   Chat Room
 </div>
+
+<div id="productCard"></div>
 
 <div class="container">
   <div id="chatBox" class="chat-box"></div>
@@ -140,32 +187,26 @@ let targetUserId = userId;
 let currentUserId = null;
 
 /* GET LOGIN USER */
-async function getMe() {
 
-  try {
+async function getMe(){
+  const res = await fetch("/api/me", {
+    credentials:"include"
+  });
 
-    const res = await fetch("/api/me", {
-      credentials: "include"
-    });
+  const data = await res.json();
 
-    const data = await res.json();
-
-    if(data.success){
-      currentUserId = Number(data.user.id);
-    }
-
-    console.log("MY ID =", currentUserId);
-
-  } catch(err){
-    console.log(err);
+  if(data.success){
+    window.currentUserId = Number(data.user.id);
   }
 
+  console.log("MY ID:", window.currentUserId);
 }
 
 /* INIT CHAT */
 async function initChat() {
 
-  if (!productId) return;
+// 🔥 FIX: jangan return mentah, cek valid number
+  if (!productId || productId === "0") return;
 
   try {
 
@@ -174,70 +215,68 @@ async function initChat() {
 
     if (!data.success) return;
 
-    targetUserId = data.product.sellerId;
+    const product = data.product;
+
+    targetUserId = product.sellerId;
 
     document.querySelector(".header").innerText =
-      data.product.title;
+      product.title;
+
+    document.getElementById("productCard").innerHTML = `
+      <div class="product-chat-card">
+        <img
+          src="${product.images?.[0] || '/public/images/banner1.jpg'}"
+          class="product-chat-img"
+        >
+
+        <div class="product-chat-info">
+          <div class="product-chat-title">
+            ${product.title}
+          </div>
+
+          <div class="product-chat-price">
+            Rp ${Number(product.price).toLocaleString("id-ID")}
+          </div>
+        </div>
+      </div>
+    `;
 
   } catch(err){
     console.log(err);
   }
-
 }
 
 /* LOAD CHAT */
-async function loadChat() {
 
-  try {
+async function loadChat(){
 
-    const res = await fetch(
-      "/api/chat/" + targetUserId,
-      {
-        credentials: "include"
-      }
-    );
+  const res = await fetch(
+    `/api/chat/${targetUserId}?productId=${productId || ""}`,
+    { credentials:"include" }
+  );
 
-    const data = await res.json();
+  const data = await res.json();
 
-    const box =
-      document.getElementById("chatBox");
+  const box = document.getElementById("chatBox");
+  box.innerHTML = "";
 
-    box.innerHTML = "";
+  if(!data.success) return;
 
-    if (!data.success) return;
+  data.messages.forEach(m => {
 
-    data.messages.forEach(m => {
+    const div = document.createElement("div");
 
-console.log("CURRENT USER =", currentUserId);
-console.log("FROM =", m.fromUserId);
+    const isMe =
+      Number(m.fromUserId) === Number(window.currentUserId);
 
-      const div =
-        document.createElement("div");
+    div.className = isMe ? "msg me" : "msg other";
 
-      const isMe =
-        Number(m.fromUserId) ===
-        Number(currentUserId);
+    div.innerHTML = `<div class="bubble">${m.message}</div>`;
 
-      div.className =
-        isMe ? "msg me" : "msg other";
+    box.appendChild(div);
+  });
 
-      div.innerHTML = `
-        <div class="bubble">
-          ${m.message}
-        </div>
-      `;
-
-      box.appendChild(div);
-
-    });
-
-    box.scrollTop =
-      box.scrollHeight;
-
-  } catch(err){
-    console.log(err);
-  }
-
+  box.scrollTop = box.scrollHeight;
 }
 
 /* SEND MESSAGE */

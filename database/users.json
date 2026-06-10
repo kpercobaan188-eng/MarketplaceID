@@ -29,6 +29,21 @@
       "reportCount": 0,
       "followers": 0,
       "createdAt": 1781024820333
+    },
+    {
+      "id": 1781096009448,
+      "username": "Users 3",
+      "email": "kep46096@gmail.com",
+      "password": "$2a$10$p/LaM4f2JTNjyhzrwVT4sOLB2IyoUR2GVjttO8zxRAKYKWWqkzSpG",
+      "avatar": "/uploads/profiles/default-avatar.png",
+      "bio": "",
+      "city": "",
+      "verified": false,
+      "rating": 0,
+      "reviewCount": 0,
+      "reportCount": 0,
+      "followers": 0,
+      "createdAt": 1781096008770
     }
   ]
 }

@@ -431,6 +431,44 @@ app.get(
 );
 
 /* =========================
+   GET PRODUCT USER ID
+========================= */
+
+app.get("/api/chat/:userId", requireLogin, async (req, res) => {
+  try {
+
+    const targetUserId = Number(req.params.userId);
+    const productId = req.query.productId ? Number(req.query.productId) : null;
+
+    const chatDB = await readJSON(CHATS_DB);
+    const chats = chatDB.chats || [];
+
+    const messages = chats.filter(c => {
+
+      const userMatch =
+        (c.fromUserId === req.session.userId && c.toUserId === targetUserId) ||
+        (c.fromUserId === targetUserId && c.toUserId === req.session.userId);
+
+      const productMatch =
+        productId ? Number(c.productId) === productId : true;
+
+      return userMatch && productMatch;
+    });
+
+    messages.sort((a,b) => a.createdAt - b.createdAt);
+
+    res.json({
+      success: true,
+      messages
+    });
+
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ success:false });
+  }
+});
+
+/* =========================
    ADD PRODUCT
 ========================= */
 
@@ -978,61 +1016,48 @@ app.delete(
    CHAT SEND
 ========================= */
 
-app.post(
-  "/api/chat/send",
-  requireLogin,
-  async (req, res) => {
-    try {
-      const {
-        productId,
-        toUserId,
-        message
-      } = req.body;
+app.post("/api/chat/send", requireLogin, async (req, res) => {
+  try {
+    const { productId, toUserId, message } = req.body;
 
-      if (!message) {
-        return res.status(400).json({
-          success: false
-        });
-      }
-
-      const chatDB =
-        await readJSON(CHATS_DB);
-
-      const chats =
-        chatDB.chats || [];
-
-      const newChat = {
-        id: generateId(),
-        productId:
-          Number(productId),
-        fromUserId:
-          req.session.userId,
-        toUserId:
-          Number(toUserId),
-        message,
-        image: "",
-        read: false,
-        createdAt: Date.now()
-      };
-
-      chats.push(newChat);
-
-      await writeJSON(CHATS_DB, {
-        chats
-      });
-
-      res.json({
-        success: true,
-        chat: newChat
-      });
-
-    } catch (err) {
-      res.status(500).json({
-        success: false
+    if (!message || !toUserId) {
+      return res.status(400).json({
+        success: false,
+        message: "Data tidak lengkap"
       });
     }
+
+    const chatDB = await readJSON(CHATS_DB);
+    const chats = chatDB.chats || [];
+
+    const newChat = {
+      id: generateId(),
+      productId: productId ? Number(productId) : null,
+      fromUserId: req.session.userId,
+      toUserId: Number(toUserId),
+      message,
+      image: "",
+      read: false,
+      createdAt: Date.now()
+    };
+
+    chats.push(newChat);
+
+    await writeJSON(CHATS_DB, { chats });
+
+    res.json({
+      success: true,
+      chat: newChat
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      success: false,
+      message: "Server error"
+    });
   }
-);
+});
 
 /* =========================
    GET CHAT ROOM
@@ -1052,22 +1077,37 @@ app.get(
       const chats =
         chatDB.chats || [];
 
-      const messages =
-        chats.filter(
-          c =>
-            (
-              c.fromUserId ===
-                req.session.userId &&
-              c.toUserId ===
-                targetUserId
-            ) ||
-            (
-              c.fromUserId ===
-                targetUserId &&
-              c.toUserId ===
-                req.session.userId
-            )
-        );
+      const productId =
+  Number(req.query.productId);
+
+const messages =
+  chats.filter(
+    c =>
+
+      (
+
+        (
+          c.fromUserId ===
+            req.session.userId &&
+          c.toUserId ===
+            targetUserId
+        ) ||
+
+        (
+          c.fromUserId ===
+            targetUserId &&
+          c.toUserId ===
+            req.session.userId
+        )
+
+      )
+
+      &&
+
+      Number(c.productId) ===
+      productId
+
+  );
 
       messages.sort(
         (a, b) =>
@@ -1092,80 +1132,89 @@ app.get(
    INBOX
 ========================= */
 
-app.get(
-  "/api/inbox",
-  requireLogin,
-  async (req, res) => {
-    try {
-      const chatDB =
-        await readJSON(CHATS_DB);
+app.get("/api/inbox", requireLogin, async (req, res) => {
+  try {
 
-      const userDB =
-        await readJSON(USERS_DB);
+    const chatDB = await readJSON(CHATS_DB);
+    const userDB = await readJSON(USERS_DB);
 
-      const chats =
-        chatDB.chats || [];
+    const chats = chatDB.chats || [];
+    const users = userDB.users || [];
 
-      const users =
-        userDB.users || [];
+    const myId = req.session.userId;
 
-      const inboxMap =
-        new Map();
+    // 🔥 KEY FIX: group by user + product
+    const inboxMap = new Map();
 
-      chats.forEach(chat => {
-        if (
-          chat.fromUserId ===
-            req.session.userId ||
-          chat.toUserId ===
-            req.session.userId
-        ) {
-          const otherUserId =
-            chat.fromUserId ===
-            req.session.userId
-              ? chat.toUserId
-              : chat.fromUserId;
+    chats.forEach(chat => {
 
-          inboxMap.set(
-            otherUserId,
-            chat
-          );
+      const isRelated =
+        chat.fromUserId === myId ||
+        chat.toUserId === myId;
+
+      if (!isRelated) return;
+
+      const otherUserId =
+        chat.fromUserId === myId
+          ? chat.toUserId
+          : chat.fromUserId;
+
+      const productId = chat.productId || 0;
+
+      // 🔥 UNIQUE THREAD KEY (INI YANG FIX BUG KAMU)
+      const threadKey = `${otherUserId}_${productId}`;
+
+      // ambil message terakhir
+      const prev = inboxMap.get(threadKey);
+
+      if (!prev || prev.createdAt < chat.createdAt) {
+        inboxMap.set(threadKey, chat);
+      }
+    });
+
+    const inbox = Array.from(inboxMap.values()).map(chat => {
+
+      const otherUserId =
+        chat.fromUserId === myId
+          ? chat.toUserId
+          : chat.fromUserId;
+
+      const user = users.find(u => u.id === otherUserId);
+
+      return {
+        user: {
+          id: user?.id,
+          username: user?.username,
+          avatar: user?.avatar
+        },
+        chat: {
+          id: chat.id,
+          message: chat.message,
+          createdAt: chat.createdAt,
+          productId: chat.productId || null,
+          read: chat.read
         }
-      });
+      };
+    });
 
-      const inbox =
-        Array.from(
-          inboxMap.values()
-        ).map(chat => {
-          const otherUser =
-            users.find(
-              u =>
-                u.id ===
-                (
-                  chat.fromUserId ===
-                  req.session.userId
-                    ? chat.toUserId
-                    : chat.fromUserId
-                )
-            );
+    // 🔥 SORT TERBARU DI ATAS
+    inbox.sort((a, b) =>
+      b.chat.createdAt - a.chat.createdAt
+    );
 
-          return {
-            chat,
-            user: otherUser
-          };
-        });
+    res.json({
+      success: true,
+      inbox
+    });
 
-      res.json({
-        success: true,
-        inbox
-      });
-
-    } catch (err) {
-      res.status(500).json({
-        success: false
-      });
-    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      success: false,
+      message: "Server error"
+    });
   }
-);
+});
 
 /* =========================
    NOTIFICATIONS
