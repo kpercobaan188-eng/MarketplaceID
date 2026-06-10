@@ -1,3 +1,4 @@
+views/chat.html
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -35,32 +36,51 @@
       gap: 10px;
     }
 
-    .chat-box {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
+.chat-box{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
 
-    .msg {
-      max-width: 75%;
-      padding: 10px;
-      border-radius: 12px;
-      font-size: 13px;
-    }
+.msg{
+  display:flex;
+  width:100%;
+}
 
-    .me {
-      align-self: flex-end;
-      background: #ef4444;
-      color: white;
-      border-bottom-right-radius: 0;
-    }
+.msg.me{
+  justify-content:flex-end;
+}
 
-    .other {
-      align-self: flex-start;
-      background: #1f2937;
-      color: white;
-      border-bottom-left-radius: 0;
-    }
+.msg.other{
+  justify-content:flex-start;
+}
+
+.bubble{
+  max-width:75%;
+  padding:12px 16px;
+  border-radius:18px;
+  font-size:14px;
+  line-height:1.4;
+  word-break:break-word;
+}
+
+.msg.me .bubble{
+  background:linear-gradient(
+    135deg,
+    #ef4444,
+    #dc2626
+  );
+  color:white;
+  border-bottom-right-radius:6px;
+  box-shadow:0 8px 20px rgba(239,68,68,.25);
+}
+
+.msg.other .bubble{
+  background:#1f2937;
+  color:white;
+  border-bottom-left-radius:6px;
+  border:1px solid #374151;
+}
 
     .input-area {
       position: fixed;
@@ -112,52 +132,192 @@
 
 <script>
 const params = new URLSearchParams(window.location.search);
+
 const userId = params.get("id");
+const productId = params.get("productId");
+
+let targetUserId = userId;
+let currentUserId = null;
+
+/* GET LOGIN USER */
+async function getMe() {
+
+  try {
+
+    const res = await fetch("/api/me", {
+      credentials: "include"
+    });
+
+    const data = await res.json();
+
+    if(data.success){
+      currentUserId = Number(data.user.id);
+    }
+
+    console.log("MY ID =", currentUserId);
+
+  } catch(err){
+    console.log(err);
+  }
+
+}
+
+/* INIT CHAT */
+async function initChat() {
+
+  if (!productId) return;
+
+  try {
+
+    const res = await fetch(`/api/products/${productId}`);
+    const data = await res.json();
+
+    if (!data.success) return;
+
+    targetUserId = data.product.sellerId;
+
+    document.querySelector(".header").innerText =
+      data.product.title;
+
+  } catch(err){
+    console.log(err);
+  }
+
+}
 
 /* LOAD CHAT */
 async function loadChat() {
-  const res = await fetch("/api/chat/" + userId);
-  const data = await res.json();
 
-  const box = document.getElementById("chatBox");
-  box.innerHTML = "";
+  try {
 
-  if (!data.messages) return;
+    const res = await fetch(
+      "/api/chat/" + targetUserId,
+      {
+        credentials: "include"
+      }
+    );
 
-  data.messages.forEach(m => {
-    const div = document.createElement("div");
+    const data = await res.json();
 
-    div.className = "msg " + (m.fromUserId == userId ? "other" : "me");
+    const box =
+      document.getElementById("chatBox");
 
-    div.innerText = m.message;
+    box.innerHTML = "";
 
-    box.appendChild(div);
-  });
+    if (!data.success) return;
+
+    data.messages.forEach(m => {
+
+console.log("CURRENT USER =", currentUserId);
+console.log("FROM =", m.fromUserId);
+
+      const div =
+        document.createElement("div");
+
+      const isMe =
+        Number(m.fromUserId) ===
+        Number(currentUserId);
+
+      div.className =
+        isMe ? "msg me" : "msg other";
+
+      div.innerHTML = `
+        <div class="bubble">
+          ${m.message}
+        </div>
+      `;
+
+      box.appendChild(div);
+
+    });
+
+    box.scrollTop =
+      box.scrollHeight;
+
+  } catch(err){
+    console.log(err);
+  }
+
 }
 
 /* SEND MESSAGE */
 async function sendMsg() {
-  const message = document.getElementById("message").value;
+
+  const input =
+    document.getElementById("message");
+
+  const message =
+    input.value.trim();
 
   if (!message) return;
 
-  await fetch("/api/chat/send", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      toUserId: userId,
-      message: message
-    })
-  });
+  try {
 
-  document.getElementById("message").value = "";
+    const res =
+      await fetch("/api/chat/send", {
+        method: "POST",
+        headers: {
+          "Content-Type":
+            "application/json"
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          toUserId:
+            Number(targetUserId),
+          productId:
+            Number(productId) || null,
+          message
+        })
+      });
 
-  loadChat();
+    const data = await res.json();
+
+console.log("SEND RESULT:", data);
+
+if (!data.success) {
+  alert(JSON.stringify(data));
+  return;
 }
 
-loadChat();
+    input.value = "";
+
+    await loadChat();
+
+  } catch(err) {
+
+    console.log(err);
+    alert("Server error");
+
+  }
+
+}
+
+/* ENTER KEY */
+document
+.getElementById("message")
+.addEventListener(
+  "keypress",
+  function(e){
+    if(e.key === "Enter"){
+      sendMsg();
+    }
+  }
+);
+
+/* START */
+(async () => {
+
+  await getMe();
+
+  await initChat();
+
+  await loadChat();
+
+  setInterval(() => {
+    loadChat();
+  }, 3000);
+
+})();
 </script>
 
 </body>

@@ -38,51 +38,62 @@
       gap: 10px;
     }
 
-    .chat-item {
-      background: #111827;
-      padding: 12px;
-      border-radius: 15px;
-      border: 1px solid #1f2937;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      cursor: pointer;
-    }
+.chat-item{
+  background:#111827;
+  border:1px solid #1f2937;
+  border-radius:18px;
+  padding:14px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  cursor:pointer;
+  transition:.2s;
+}
 
-    .chat-item img {
-      width: 45px;
-      height: 45px;
-      border-radius: 50%;
-      object-fit: cover;
-    }
+.chat-item:hover{
+  transform:translateY(-2px);
+}
 
-    .chat-info {
-      flex: 1;
-    }
+.chat-item img{
+  width:55px;
+  height:55px;
+  border-radius:50%;
+  object-fit:cover;
+}
 
-    .name {
-      font-size: 14px;
-      font-weight: bold;
-    }
+.name{
+  color:#fff;
+  font-size:15px;
+  font-weight:700;
+}
 
-    .msg {
-      font-size: 12px;
-      color: #9ca3af;
-      margin-top: 2px;
-    }
+.msg{
+  color:#94a3b8;
+  font-size:12px;
+  margin-top:4px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
 
-    .time {
-      font-size: 10px;
-      color: #6b7280;
-    }
+.time{
+  color:#64748b;
+  font-size:11px;
+  margin-left:auto;
+}
 
-    .badge {
-      background: #ef4444;
-      color: white;
-      font-size: 10px;
-      padding: 2px 6px;
-      border-radius: 10px;
-    }
+.badge{
+  background:#ef4444;
+  min-width:20px;
+  height:20px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#fff;
+  font-size:11px;
+  margin-left:8px;
+}
   </style>
 </head>
 
@@ -107,36 +118,87 @@
 
 <script>
 async function loadChats() {
-  const res = await fetch("/api/chats");
+
+  const res = await fetch("/api/inbox", {
+    credentials: "include"
+  });
+
   const data = await res.json();
 
-  const container = document.getElementById("chats");
+  const container =
+    document.getElementById("chats");
 
-  if (!data.chats) return;
+  container.innerHTML = "";
 
-  data.chats.forEach(c => {
-    const div = document.createElement("div");
+  if (!data.success) return;
+
+  if (!data.inbox) return;
+
+  data.inbox.forEach(item => {
+
+    const user = item.user || {};
+
+    const chat = item.chat || {};
+
+    const div =
+      document.createElement("div");
+
     div.className = "chat-item";
 
+    const date =
+      new Date(chat.createdAt || Date.now());
+
+    const time =
+      date.toLocaleTimeString("id-ID", {
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+
     div.innerHTML = `
-      <img src="${c.avatar || '/public/images/default-avatar.png'}">
+      <img src="${
+        user.avatar ||
+        '/public/images/default-avatar.png'
+      }">
+
       <div class="chat-info">
-        <div class="name">${c.name}</div>
-        <div class="msg">${c.lastMessage || 'Mulai percakapan'}</div>
+
+        <div class="name">
+          ${user.username || user.name || 'User'}
+        </div>
+
+        <div class="msg">
+          ${chat.message || 'Mulai percakapan'}
+        </div>
+
       </div>
-      <div class="time">${c.time || ''}</div>
-      ${c.unread ? `<div class="badge">${c.unread}</div>` : ''}
+
+      <div class="time">
+        ${time}
+      </div>
+
+      ${
+        chat.read === false
+        ? '<div class="badge">1</div>'
+        : ''
+      }
     `;
 
     div.onclick = () => {
-      window.location.href = "/chat?id=" + c.id;
+
+      window.location.href =
+        "/chat?id=" + user.id;
+
     };
 
     container.appendChild(div);
+
   });
+
 }
 
 loadChats();
+
+setInterval(loadChats,3000);
 </script>
 
 </body>

@@ -8,18 +8,18 @@
   <link rel="stylesheet" href="/public/css/style.css">
 
   <style>
-    /* ===== APP LAYOUT ===== */
     body {
-      -webkit-tap-highlight-color: transparent;
+      margin: 0;
+      font-family: sans-serif;
       background: #0b0f19;
+      color: white;
     }
 
     .container {
-      padding-top: 70px;
-      padding-bottom: 80px;
+      padding: 70px 12px 90px;
     }
 
-    /* ===== HEADER ===== */
+    /* HEADER */
     .header {
       position: fixed;
       top: 0;
@@ -29,94 +29,101 @@
       background: #111827;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      padding: 0 15px;
-      border-bottom: 1px solid #1f2937;
+      padding: 0 12px;
       z-index: 1000;
+      border-bottom: 1px solid #1f2937;
     }
 
     .logo {
       color: #ef4444;
       font-weight: bold;
-      font-size: 16px;
-    }
-
-    .search {
-      flex: 1;
-      margin: 0 10px;
+      font-size: 14px;
+      margin-right: 10px;
     }
 
     .search input {
       width: 100%;
-      padding: 8px;
+      padding: 8px 10px;
       border-radius: 10px;
       border: none;
       background: #1f2937;
       color: white;
       font-size: 12px;
+      outline: none;
     }
 
-    /* ===== BANNER ===== */
+    /* BANNER */
     .banner {
       background: linear-gradient(135deg, #ef4444, #111827);
-      padding: 15px;
-      border-radius: 15px;
-      margin-bottom: 15px;
-      color: white;
+      padding: 14px;
+      border-radius: 14px;
+      margin-bottom: 14px;
     }
 
     .banner h2 {
-      font-size: 16px;
+      font-size: 14px;
+      margin: 0;
     }
 
     .banner p {
       font-size: 12px;
-      margin-top: 5px;
-      color: #e5e7eb;
+      color: #d1d5db;
+      margin: 5px 0 10px;
     }
 
     .banner button {
-      margin-top: 10px;
       padding: 8px 12px;
       border: none;
       border-radius: 10px;
       background: white;
-      color: #111827;
-      font-weight: bold;
       font-size: 12px;
+      font-weight: bold;
     }
 
-    /* ===== CATEGORY ===== */
+    /* CATEGORY */
     .category {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 10px;
-      margin-bottom: 15px;
+      margin-bottom: 14px;
     }
 
     .cat-item {
       background: #111827;
+      border: 1px solid #1f2937;
       padding: 10px;
       border-radius: 12px;
       text-align: center;
       font-size: 11px;
-      border: 1px solid #1f2937;
       color: #9ca3af;
     }
 
-    /* ===== PRODUCT CARD ===== */
+    /* GRID PRODUCTS */
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    /* CARD */
     .product {
       background: #111827;
-      border-radius: 15px;
-      margin-bottom: 15px;
+      border-radius: 14px;
       overflow: hidden;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+      transition: 0.2s;
       border: 1px solid #1f2937;
+    }
+
+    .product:hover {
+      transform: translateY(-3px);
     }
 
     .product img {
       width: 100%;
-      height: 180px;
+      height: 140px;
       object-fit: cover;
+      background: #0f172a;
     }
 
     .product-body {
@@ -124,13 +131,18 @@
     }
 
     .title {
-      font-size: 14px;
+      font-size: 13px;
       font-weight: bold;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .price {
       color: #ef4444;
-      margin-top: 5px;
+      font-size: 13px;
+      margin-top: 4px;
+      font-weight: bold;
     }
 
     .meta {
@@ -139,7 +151,7 @@
       margin-top: 3px;
     }
 
-    /* ===== BOTTOM NAV ===== */
+    /* BOTTOM NAV */
     .bottom-nav {
       position: fixed;
       bottom: 0;
@@ -155,61 +167,14 @@
 
     .bottom-nav a {
       color: #9ca3af;
-      font-size: 11px;
       text-decoration: none;
+      font-size: 11px;
     }
 
     .bottom-nav a.active {
       color: #ef4444;
     }
-
-   .card-product{
-  display:flex;
-  gap:12px;
-  background:#111827;
-  padding:12px;
-  border-radius:15px;
-  margin-bottom:10px;
-  border:1px solid #1f2937;
-  transition:0.2s;
-}
-
-.card-product:active{
-  transform:scale(0.98);
-}
-
-.card-product img{
-  width:90px;
-  height:90px;
-  border-radius:12px;
-  object-fit:cover;
-  background:#1f2937;
-}
-
-.card-info{
-  flex:1;
-}
-
-.card-info .title{
-  font-size:14px;
-  font-weight:bold;
-  margin-bottom:5px;
-}
-
-.card-info .price{
-  color:#ef4444;
-  font-weight:bold;
-  margin-bottom:8px;
-}
-
-.card-info .meta{
-  display:flex;
-  justify-content:space-between;
-  font-size:11px;
-  color:#9ca3af;
-}  
-
-</style>
+  </style>
 </head>
 
 <body>
@@ -217,9 +182,8 @@
 <!-- HEADER -->
 <div class="header">
   <div class="logo">MID</div>
-
   <div class="search">
-    <input type="text" placeholder="Cari barang...">
+    <input type="text" placeholder="Cari produk, kategori...">
   </div>
 </div>
 
@@ -228,7 +192,7 @@
   <!-- BANNER -->
   <div class="banner">
     <h2>Temukan Barang Terbaik</h2>
-    <p>Jual beli aman, dekat, dan terpercaya</p>
+    <p>Jual beli aman & terpercaya</p>
     <button>Belanja Sekarang</button>
   </div>
 
@@ -240,8 +204,8 @@
     <div class="cat-item">Rumah</div>
   </div>
 
-  <!-- PRODUCTS (DYNAMIC) -->
-  <div id="products"></div>
+  <!-- PRODUCTS -->
+  <div class="product-grid" id="products"></div>
 
 </div>
 
@@ -260,28 +224,25 @@ async function loadHome() {
   const data = await res.json();
 
   const container = document.getElementById("products");
-
-  if (!data.latest) return;
+  container.innerHTML = "";
 
   data.latest.forEach(p => {
+
+    const img = (p.images && p.images.length > 0)
+      ? p.images[0]
+      : "/public/images/banner1.jpg";
+
     const div = document.createElement("div");
     div.className = "product";
 
     div.innerHTML = `
-  <div class="card-product">
-    <img src="${p.images?.[0] || '/public/images/banner1.jpg'}">
-
-    <div class="card-info">
-      <div class="title">${p.title}</div>
-      <div class="price">Rp ${p.price}</div>
-
-      <div class="meta">
-        <span>📍 ${p.location || 'Indonesia'}</span>
-        <span>❤️ ${p.favorites || 0}</span>
+      <img src="${img}">
+      <div class="product-body">
+        <div class="title">${p.title}</div>
+        <div class="price">Rp ${Number(p.price).toLocaleString()}</div>
+        <div class="meta">${p.location || 'Indonesia'}</div>
       </div>
-    </div>
-  </div>
-`;
+    `;
 
     div.onclick = () => {
       window.location.href = "/product?id=" + p.id;

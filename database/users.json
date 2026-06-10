@@ -14,6 +14,21 @@
       "reportCount": 0,
       "followers": 0,
       "createdAt": 1780978747655
+    },
+    {
+      "id": 1781024821009,
+      "username": "Pon",
+      "email": "rahmadaja805@gmail.com",
+      "password": "$2a$10$gsG2k6sHJZ7KBUuDI1b52uasMdy6u6jN1J0up68kHQIr1Go1IuJ6C",
+      "avatar": "/uploads/profiles/default-avatar.png",
+      "bio": "",
+      "city": "",
+      "verified": false,
+      "rating": 0,
+      "reviewCount": 0,
+      "reportCount": 0,
+      "followers": 0,
+      "createdAt": 1781024820333
     }
   ]
 }
