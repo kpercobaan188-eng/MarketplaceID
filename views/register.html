@@ -70,6 +70,55 @@
       color: #ef4444;
       text-decoration: none;
     }
+
+/* POPUP */
+.popup{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+
+  display:none;
+  justify-content:center;
+  align-items:center;
+
+  background:rgba(0,0,0,.7);
+
+  z-index:9999;
+}
+
+.popup-box{
+
+  width:90%;
+  max-width:350px;
+
+  padding:25px;
+
+  border-radius:20px;
+
+  text-align:center;
+
+  color:white;
+
+  background:#111827;
+
+  border:1px solid #ef4444;
+
+  box-shadow:
+  0 0 25px rgba(239,68,68,.3);
+}
+
+.popup-box h2{
+  color:#ef4444;
+  margin-bottom:10px;
+}
+
+./popup-box p{
+  color:#d1d5db;
+  margin-bottom:20px;
+}
+
   </style>
 </head>
 
@@ -114,14 +163,72 @@
 
       const data = await res.json();
 
-      if (data.success) {
-        alert("Register berhasil");
-        window.location.href = "/login";
-      } else {
-        alert(data.message || "Register gagal");
-      }
+    if (data.success) {
+
+  document.getElementById("successPopup")
+    .style.display = "flex";
+
+} else {
+
+  document.getElementById("errorPopup")
+    .style.display = "flex";
+
+  document.getElementById("errorText")
+    .innerText =
+    data.message || "Register gagal";
+}
     }
   </script>
+
+<!-- SUCCESS POPUP -->
+<div id="successPopup" class="popup">
+
+  <div class="popup-box">
+
+    <h2>🎉 Register Berhasil</h2>
+
+    <p>
+      Akun berhasil dibuat.
+      Silahkan login untuk melanjutkan.
+    </p>
+
+    <button onclick="goLogin()">
+      Login Sekarang
+    </button>
+
+  </div>
+
+</div>
+
+<!-- ERROR POPUP -->
+<div id="errorPopup" class="popup">
+
+  <div class="popup-box">
+
+    <h2>❌ Gagal</h2>
+
+    <p id="errorText"></p>
+
+    <button onclick="closePopup()">
+      Tutup
+    </button>
+
+  </div>
+
+</div>
+
+<script>
+
+function goLogin(){
+  window.location.href="/login";
+}
+
+function closePopup(){
+  document.getElementById("errorPopup")
+    .style.display="none";
+}
+
+</script>
 
 </body>
 </html>
