@@ -32,9 +32,26 @@
         "/uploads/products/1781073339939-74631.png"
       ],
       "status": "active",
-      "views": 35,
+      "views": 42,
       "favorites": 0,
       "createdAt": 1781073340076
+    },
+    {
+      "id": 1781149637398,
+      "sellerId": 1780978748081,
+      "title": "Kucing",
+      "price": 999999,
+      "category": "🐱 Hewan Peliharaan",
+      "condition": "Bekas",
+      "description": "Bisa diajak adu nasib",
+      "location": "",
+      "images": [
+        "/uploads/products/1781149636351-19775.jpg"
+      ],
+      "status": "active",
+      "views": 14,
+      "favorites": 0,
+      "createdAt": 1781149636403
     }
   ]
 }

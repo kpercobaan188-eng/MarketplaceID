@@ -393,7 +393,9 @@ app.get(
 app.get(
   "/api/products/:id",
   async (req, res) => {
+
     try {
+
       const productId =
         Number(req.params.id);
 
@@ -410,9 +412,8 @@ app.get(
 
       if (!product) {
         return res.status(404).json({
-          success: false,
-          message:
-            "Produk tidak ditemukan"
+          success:false,
+          message:"Produk tidak ditemukan"
         });
       }
 
@@ -421,21 +422,37 @@ app.get(
 
       await writeJSON(
         PRODUCTS_DB,
-        {
-          products
-        }
+        { products }
       );
 
+      const usersDb =
+        await readJSON(USERS_DB);
+
+      const users =
+        usersDb.users || [];
+
+        const seller =
+  users.find(
+    u =>
+      u.id === product.sellerId ||
+      u.id === product.userId ||
+      u.username === product.username
+  );
+
       res.json({
-        success: true,
-        product
+        success:true,
+        product,
+        seller: seller || null
       });
 
-    } catch (err) {
+    } catch(err){
+
       res.status(500).json({
-        success: false
+        success:false
       });
+
     }
+
   }
 );
 

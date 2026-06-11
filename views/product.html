@@ -188,8 +188,21 @@ async function loadProduct() {
     document.getElementById("desc").innerText =
       p.description || "Tidak ada deskripsi";
 
-    document.getElementById("seller").innerText =
-      "Seller ID: " + p.sellerId;
+if(data.seller){
+
+  document.getElementById("seller").innerText =
+    data.seller.username || "Seller";
+
+  document.getElementById("sellerImg").src =
+    data.seller.avatar ||
+    "/public/images/default-avatar.png";
+
+}else{
+
+  document.getElementById("seller").innerText =
+    "Unknown Seller";
+
+}
 
     console.log("PRODUCT =", currentProduct);
 

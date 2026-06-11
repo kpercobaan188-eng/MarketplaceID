@@ -319,6 +319,36 @@
       "image": "",
       "read": false,
       "createdAt": 1781097406889
+    },
+    {
+      "id": 1781149788948,
+      "productId": 1781073340479,
+      "fromUserId": 1781096009448,
+      "toUserId": 1781024821009,
+      "message": "Kalau 150 gimana",
+      "image": "",
+      "read": false,
+      "createdAt": 1781149788844
+    },
+    {
+      "id": 1781149843920,
+      "productId": null,
+      "fromUserId": 1781024821009,
+      "toUserId": 1781096009448,
+      "message": "Hmm 🤔sedang ditinjau",
+      "image": "",
+      "read": false,
+      "createdAt": 1781149843027
+    },
+    {
+      "id": 1781149988864,
+      "productId": 1781149637398,
+      "fromUserId": 1781024821009,
+      "toUserId": 1780978748081,
+      "message": "Ini brp",
+      "image": "",
+      "read": false,
+      "createdAt": 1781149988709
     }
   ]
 }
