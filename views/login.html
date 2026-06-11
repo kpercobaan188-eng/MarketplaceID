@@ -70,6 +70,29 @@
       color: #ef4444;
       text-decoration: none;
     }
+
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  display: none;
+  justify-content: center;
+  align-items: center;
+}
+
+.popup-box {
+  background: #111827;
+  padding: 20px;
+  border-radius: 15px;
+  text-align: center;
+  color: white;
+  width: 80%;
+  max-width: 320px;
+}
+
   </style>
 </head>
 
@@ -108,14 +131,44 @@
 
       const data = await res.json();
 
-      if (data.success) {
-        alert("Login berhasil");
-        window.location.href = "/home";
-      } else {
-        alert(data.message || "Login gagal");
-      }
+    if (data.success) {
+
+  document.getElementById("successPopup")
+    .style.display = "flex";
+
+  document.getElementById("successText")
+    .innerText = "Login berhasil";
+
+  setTimeout(() => {
+    window.location.href = "/home";
+  }, 1200);
+
+} else {
+
+  document.getElementById("errorPopup")
+    .style.display = "flex";
+
+  document.getElementById("errorText")
+    .innerText = data.message || "Login gagal";
+}
     }
   </script>
+
+  <div id="successPopup" class="popup">
+    <div class="popup-box">
+      <h2>🎉 Sukses</h2>
+      <p id="successText"></p>
+      <button onclick="closePopup()">OK</button>
+    </div>
+  </div>
+
+  <div id="errorPopup" class="popup">
+    <div class="popup-box">
+      <h2>❌ Gagal</h2>
+      <p id="errorText"></p>
+      <button onclick="closePopup()">OK</button>
+    </div>
+  </div>
 
 </body>
 </html>
