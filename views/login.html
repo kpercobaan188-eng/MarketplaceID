@@ -111,82 +111,83 @@
     </div>
   </div>
 
-  <script>
-    async function doLogin() {
-      const login = document.getElementById("login").value;
-      const password = document.getElementById("password").value;
+<script>
+async function doLogin() {
+  const login = document.getElementById("login").value;
+  const password = document.getElementById("password").value;
 
-      if (!login || !password) {
-        alert("Isi semua field");
-        return;
-      }
+  if (!login || !password) {
+    alert("Isi semua field");
+    return;
+  }
 
-      const res = await fetch("/api/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ login, password })
-      });
+  try {
+    const res = await fetch("/api/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ login, password })
+    });
 
-      const data = await res.json();
+    const data = await res.json();
 
     if (data.success) {
 
-  document.getElementById("successPopup")
-    .style.display = "flex";
+      document.getElementById("successPopup")
+        .style.display = "flex";
 
-  document.getElementById("successText")
-    .innerText = "Login berhasil";
+      document.getElementById("successText")
+        .innerText = "Login berhasil";
 
-  setTimeout(() => {
-    window.location.href = "/home";
-  }, 1200);
+      setTimeout(() => {
+        window.location.href = "/home";
+      }, 1500);
 
-} else {
+    } else {
 
-  document.getElementById("errorPopup")
-    .style.display = "flex";
+      document.getElementById("errorPopup")
+        .style.display = "flex";
 
-  document.getElementById("errorText")
-    .innerText = data.message || "Login gagal";
-}
+      document.getElementById("errorText")
+        .innerText = data.message || "Login gagal";
     }
-  <script>
 
-  <div id="successPopup" class="popup">
-    <div class="popup-box">
-      <h2>🎉 Sukses</h2>
-      <p id="successText"></p>
-      <button onclick="closePopup()">OK</button>
-    </div>
-  </div>
+  } catch (err) {
+    document.getElementById("errorPopup")
+      .style.display = "flex";
 
-  <!-- ERROR POPUP -->
- <div id="errorPopup" class="popup">
-
-   <div class="popup-box">
-
-     <h2>❌ Gagal</h2>
-
-     <p id="errorText"></p>
-
-     <button onclick="closePopup()">
-       Tutup
-     </button>
-
-   </div>
-
-</div>
-
+    document.getElementById("errorText")
+      .innerText = "Server error";
+  }
+}
 </script>
 
-function closePopup(){
-  document.getElementById("errorPopup").style.display="none";
-  document.getElementById("successPopup").style.display="none";
-}
+<!-- SUCCESS POPUP -->
+<div id="successPopup" class="popup">
+  <div class="popup-box">
+    <h2>🎉 Sukses</h2>
+    <p id="successText"></p>
+    <button onclick="closePopup()">OK</button>
+  </div>
+</div>
 
+<!-- ERROR POPUP -->
+<div id="errorPopup" class="popup">
+  <div class="popup-box">
+    <h2>❌ Gagal</h2>
+    <p id="errorText"></p>
+    <button onclick="closePopup()">Tutup</button>
+  </div>
+</div>
+
+<!-- CLOSE FUNCTION -->
 <script>
+function closePopup() {
+  document.getElementById("errorPopup").style.display = "none";
+  document.getElementById("successPopup").style.display = "none";
+}
+</script>
 
 </body>
 </html>
