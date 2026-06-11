@@ -145,9 +145,15 @@
       const password = document.getElementById("password").value;
 
       if (!username || !email || !password) {
-        alert("Isi semua field");
-        return;
-      }
+
+  document.getElementById("errorPopup")
+    .style.display = "flex";
+
+  document.getElementById("errorText")
+    .innerText = "Isi semua field";
+
+  return;
+}
 
       const res = await fetch("/api/register", {
         method: "POST",
