@@ -15,6 +15,15 @@ if (!fs.existsSync(dir)) {
   fs.mkdirSync(dir, { recursive: true });
 }
 
+const profileDir =
+  path.join(__dirname, "uploads/profiles");
+
+if (!fs.existsSync(profileDir)) {
+  fs.mkdirSync(profileDir, {
+    recursive: true
+  });
+}
+
 /* =========================
    MIDDLEWARE
 ========================= */
@@ -1384,7 +1393,9 @@ app.put(
   "/api/profile",
   requireLogin,
   async (req, res) => {
+
     try {
+
       const db =
         await readJSON(USERS_DB);
 
@@ -1400,21 +1411,24 @@ app.put(
 
       if (!user) {
         return res.status(404).json({
-          success: false
+          success:false
         });
       }
 
-      user.username =
-        req.body.username ||
-        user.username;
+      if(req.body.username){
+        user.username =
+          req.body.username;
+      }
 
-      user.bio =
-        req.body.bio ||
-        user.bio;
+      if(req.body.bio !== undefined){
+        user.bio =
+          req.body.bio;
+      }
 
-      user.city =
-        req.body.city ||
-        user.city;
+      if(req.body.city !== undefined){
+        user.city =
+          req.body.city;
+      }
 
       await writeJSON(
         USERS_DB,
@@ -1422,16 +1436,20 @@ app.put(
       );
 
       res.json({
-        success: true,
-        message:
-          "Profil berhasil diperbarui"
+        success:true,
+        user
       });
 
-    } catch (err) {
+    } catch(err){
+
+      console.log(err);
+
       res.status(500).json({
-        success: false
+        success:false
       });
+
     }
+
   }
 );
 
@@ -1460,15 +1478,16 @@ app.post(
             req.session.userId
         );
 
-      if (!user) {
-        return res.status(404).json({
-          success: false
-        });
-      }
+      if(!req.file){
+  return res.status(400).json({
+    success:false,
+    message:"File avatar tidak ada"
+  });
+}
 
-      user.avatar =
-        "/uploads/profiles/" +
-        req.file.filename;
+user.avatar =
+  "/uploads/profiles/" +
+  req.file.filename;
 
       await writeJSON(
         USERS_DB,

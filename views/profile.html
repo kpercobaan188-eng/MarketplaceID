@@ -118,6 +118,26 @@
       background: #1f2937;
     }
 
+.avatar-box{
+  position:relative;
+  width:80px;
+  margin:auto;
+}
+
+.camera-btn{
+  position:absolute;
+  bottom:-5px;
+  right:-5px;
+  width:30px;
+  height:30px;
+  border:none;
+  border-radius:50%;
+  background:#ef4444;
+  color:white;
+  font-size:14px;
+  cursor:pointer;
+}
+
   </style>
 </head>
 
@@ -130,11 +150,33 @@
 <div class="container">
 
   <!-- PROFILE -->
-  <div class="profile-card">
 
-    <img id="avatar" src="/public/images/default-avatar.png">
+   <div class="profile-card">
 
-    <div class="name" id="username">User</div>
+  <div class="avatar-box">
+
+    <img
+      id="avatar"
+      src="/public/images/default-avatar.png"
+    >
+
+    <input
+  type="file"
+  id="avatarInput"
+  accept="image/*"
+  style="display:none"
+>
+
+<button
+  class="camera-btn"
+  onclick="document.getElementById('avatarInput').click()"
+>
+📷
+</button>
+
+  </div>
+
+  <div class="name" id="username">User</div>
 
     <div class="email" id="email">email@mail.com</div>
 
@@ -203,35 +245,46 @@ function go(url){
   window.location.href = url;
 }
 
-function logout(){
-  alert("Logout berhasil");
-  window.location.href = "/login";
+async function logout(){
+
+  await fetch("/api/logout",{
+    method:"POST"
+  });
+
+  window.location.href =
+    "/login";
 }
 
 /* LOAD PROFILE */
 async function loadProfile(){
-  const res = await fetch("/api/profile");
-  const data = await res.json();
 
-  if(!data.user) return;
+  const res =
+    await fetch("/api/profile");
 
-  document.getElementById("username").innerText = data.user.username;
-  document.getElementById("email").innerText = data.user.email;
+  const data =
+    await res.json();
+
+  if(!data.success) return;
+
+  const user = data.user;
+
+  document.getElementById("username").innerText =
+    user.username || "User";
+
+  document.getElementById("email").innerText =
+    user.email || "-";
 
   document.getElementById("avatar").src =
-    data.user.avatar || "/public/images/default-avatar.png";
+    user.avatar ||
+    "/public/images/default-avatar.png";
 
   document.getElementById("badge").innerText =
-    data.user.verified ? "Verified ✔" : "Unverified";
-
-  document.getElementById("products").innerText =
-    data.stats.products || 0;
-
-  document.getElementById("orders").innerText =
-    data.stats.orders || 0;
+    user.verified
+      ? "Verified ✔"
+      : "Unverified";
 
   document.getElementById("rating").innerText =
-    data.stats.rating || 0;
+    user.rating || 0;
 }
 
 loadProfile();
